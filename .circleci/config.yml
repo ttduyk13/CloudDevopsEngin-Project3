@@ -152,7 +152,7 @@ jobs:
   deploy-infrastructure:
     docker:
       # Docker image here that supports AWS CLI
-      - image: cimg/aws:2023.07.1
+      - image: amazon/aws-cli:latest
     steps:
       # Checkout code from git
       - checkout
