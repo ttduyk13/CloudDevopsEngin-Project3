@@ -1,0 +1,17 @@
+---
+- name: Update/Upgrade packages
+  apt:
+    upgrade: dist
+
+- name: Install Node.js, npm
+  apt:
+    name: "{{ item }}"
+    state: present
+  loop:
+    - nodejs
+    - npm
+
+- name: Install pm2
+  npm:
+    name: pm2
+    global: yes
