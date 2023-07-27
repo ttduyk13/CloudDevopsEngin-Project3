@@ -9,7 +9,7 @@ commands:
             sudo apt-get update
             sudo apt-get install -y tar gzip ansible
             pip install awscli
-  
+
   install-dependencies-alternative:
     steps:
       - run:
@@ -17,7 +17,7 @@ commands:
           command: |
             sudo apt-get update
             sudo apt-get install -y npm, nodejs
-            
+
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
     parameters:
@@ -37,7 +37,7 @@ commands:
   # revert-migrations:
   #   description: Revert the last migration if successfully run in the current workflow.
   #   parameters:
-  #     # Add parameter here     
+  #     # Add parameter here
   #   steps:
   #     - run:
   #         name: Revert migrations
@@ -45,14 +45,14 @@ commands:
   #         command: |
   #           # Curl command here to see if there was a successful migration associated with the workflow id, store result in SUCCESS variable
   #           SUCCESS = 1
-  #           if(( $SUCCESS==1 )); 
+  #           if(( $SUCCESS==1 ));
   #           then
   #           #  cd ~/project/backend
   #           #  npm install
   #           #  Add revert code here. You can find this in the Getting Started section.
   #             exit 1
   #           fi
-            
+
 jobs:
   build-frontend:
     docker:
@@ -105,7 +105,7 @@ jobs:
             cd frontend
             npm install
             npm run test
-                
+
   test-backend:
     docker:
       # Docker image here
@@ -123,7 +123,7 @@ jobs:
             cd backend
             npm install
             npm run test
-            
+
   scan-frontend:
     docker:
       # Docker image here
@@ -164,7 +164,6 @@ jobs:
             npm audit fix --audit-level=critical --force
             npm update mkdirp --depth 2
             npm audit --audit-level=critical
-            
 
   deploy-infrastructure:
     docker:
@@ -203,7 +202,7 @@ jobs:
           root: ~/
           paths:
             - project/.circleci/ansible/inventory.txt
-      # Here's where you will add some code to rollback on failure     
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -227,7 +226,7 @@ jobs:
           command: |
             cd .circleci/ansible
             ansible-playbook -i inventory.txt configure-server.yml
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
@@ -253,10 +252,10 @@ jobs:
               # If you are using kvdb.io, generate the bucket ID "9GE4jRtKznmVKRfvdBABBe" in your local terminal first
               curl https://kvdb.io/Ww2HJdDraCYcVcazEPiJX2/migration_${CIRCLE_WORKFLOW_ID:0:7}  -d '1'
             fi
-            echo $(curl --insecure  https://kvdb.io/MxQcDTv8CgoYPhrVponVUB/migration_${CIRCLE_WORKFLOW_ID:0:7}) 
-     # Here's where you will add some code to rollback on failure     
+            echo $(curl --insecure  https://kvdb.io/MxQcDTv8CgoYPhrVponVUB/migration_${CIRCLE_WORKFLOW_ID:0:7})
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
-          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7} 
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
   deploy-frontend:
     docker:
@@ -288,30 +287,51 @@ jobs:
             npm run build
             tar -czvf artifact-"${CIRCLE_WORKFLOW_ID:0:7}".tar.gz dist
             aws s3 cp dist s3://udapeople-${CIRCLE_WORKFLOW_ID:0:7} --recursive
-      # Here's where you will add some code to rollback on failure      
+      # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
-                    
-#   deploy-backend:
-#     docker:
-#       # Docker image here that supports Ansible
-#     steps:
-#       # Checkout code from git
-#       # Add ssh keys with fingerprint
-#       # attach workspace
-#       - run:
-#           name: Install dependencies
-#           command: |
-#             # your code here
-#       - run:
-#           name: Deploy backend
-#           command: |
-#             # your code here
-#       # Here's where you will add some code to rollback on failure  
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
+  deploy-backend:
+    docker:
+      # Docker image here that supports Ansible
+      - image: cimg/python:3.11.4
+    steps:
+      # Checkout code from git
+      - checkout
+      # Add ssh keys with fingerprint
+      - add_ssh_keys:
+          fingerprints:
+            - "a6:26:f0:cd:c0:07:04:e5:e6:9d:1e:59:05:f5:a1:5b"
+      # attach workspace
+      - attach_workspace:
+          at: ~/
+      - install-dependencies
+      - install-dependencies-alternative
+      - run:
+          name: Deploy backend
+          command: |
+            # your code here
+            cd backend
+            npm i
+            npm run build
+            cd ..
+            ## Zip the directory
+            tar -C backend -czvf artifact.tar.gz .
+            cd .circleci/ansible
+            echo "Contents  of the inventory.txt file is -------"
+            cat inventory.txt
+            ansible-playbook -i inventory.txt deploy-backend.yml
+      # Here's where you will add some code to rollback on failure
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
 
 #   smoke-test:
 #     docker:
-#       # Lightweight Docker image 
+#       # Lightweight Docker image
 #     steps:
 #       # Checkout code from git
 #       - run:
@@ -330,7 +350,7 @@ jobs:
 #           name: Frontend smoke test.
 #           command: |
 #             # your code here
-#       # Here's where you will add some code to rollback on failure  
+#       # Here's where you will add some code to rollback on failure
 
 #   cloudfront-update:
 #     docker:
@@ -345,7 +365,7 @@ jobs:
 #           name: Update cloudfront distribution
 #           command: |
 #             # your code here
-#       # Here's where you will add some code to rollback on failure  
+#       # Here's where you will add some code to rollback on failure
 
 # cleanup:
 #     docker:
@@ -365,7 +385,6 @@ jobs:
 #             then
 #               # your code here
 #             fi
-            
 
 workflows:
   default:
@@ -391,8 +410,8 @@ workflows:
           requires: [configure-infrastructure]
       - deploy-frontend:
           requires: [run-migrations]
-      # - deploy-backend:
-      #     requires: [run-migrations]
+      - deploy-backend:
+          requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
