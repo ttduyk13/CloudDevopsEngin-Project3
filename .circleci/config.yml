@@ -16,7 +16,7 @@ commands:
           name: Install dependencies alternative
           command: |
             sudo apt-get update
-            sudo apt-get install -y npm, nodejs
+            sudo apt-get install -y npm nodejs
 
   destroy-environment:
     description: Destroy back-end and front-end cloudformation stacks given a workflow ID.
