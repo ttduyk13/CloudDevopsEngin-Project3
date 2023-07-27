@@ -263,7 +263,7 @@ jobs:
       # Checkout code from git
       - checkout
       # Add ssh keys with fingerprint
-      - add_ssh_keys:
+      - add_ssh_keys: 
           fingerprints:
             - "a6:26:f0:cd:c0:07:04:e5:e6:9d:1e:59:05:f5:a1:5b"
       # attach workspace
@@ -278,7 +278,7 @@ jobs:
           name: Configure server
           command: |
             cd .circleci/ansible
-            ansible-playbook -i inventory.txt configure-server.yml
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt configure-server.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
@@ -383,7 +383,7 @@ jobs:
             cd .circleci/ansible
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
-            ansible-playbook -i inventory.txt deploy-backend.yml
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
