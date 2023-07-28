@@ -108,7 +108,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [frontend-build]
+          keys: [ frontend-build ]
       - run:
           name: Build front-end
           command: |
@@ -125,7 +125,7 @@ jobs:
     steps:
       - checkout
       - restore_cache:
-          keys: [backend-build]
+          keys: [ backend-build ]
       - run:
           name: Back-end build
           command: |
@@ -145,7 +145,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [frontend-test]
+          keys: [ frontend-test ]
       # Your job code here
       - run:
           name: Test frontend
@@ -163,7 +163,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [backend-test]
+          keys: [ backend-test ]
       # Your job code here
       - run:
           name: Test backend
@@ -181,7 +181,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [frontend-scan]
+          keys: [ frontend-scan ]
       # Your job code here
       - run:
           name: Scan frontend
@@ -202,7 +202,7 @@ jobs:
       - checkout
       # Restore from cache
       - restore_cache:
-          keys: [backend-scan]
+          keys: [ backend-scan ]
       # Your job code here
       - run:
           name: Scan backend
@@ -263,7 +263,7 @@ jobs:
       # Checkout code from git
       - checkout
       # Add ssh keys with fingerprint
-      - add_ssh_keys: 
+      - add_ssh_keys:
           fingerprints:
             - "a6:26:f0:cd:c0:07:04:e5:e6:9d:1e:59:05:f5:a1:5b"
       # attach workspace
@@ -386,9 +386,8 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             echo "Check root"
             ls
+            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
             cd .circleci/ansible
-            echo "Check ansible"
-            ls
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt deploy-backend.yml
@@ -498,26 +497,26 @@ workflows:
       - build-frontend
       - build-backend
       - test-frontend:
-          requires: [build-frontend]
+          requires: [ build-frontend ]
       - test-backend:
-          requires: [build-backend]
+          requires: [ build-backend ]
       - scan-backend:
-          requires: [build-backend]
+          requires: [ build-backend ]
       - scan-frontend:
-          requires: [build-frontend]
+          requires: [ build-frontend ]
       - deploy-infrastructure:
-          requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+          requires: [ test-frontend, test-backend, scan-frontend, scan-backend ]
           filters:
             branches:
-              only: [dev, master]
+              only: [ dev, master ]
       - configure-infrastructure:
-          requires: [deploy-infrastructure]
+          requires: [ deploy-infrastructure ]
       - run-migrations:
-          requires: [configure-infrastructure]
+          requires: [ configure-infrastructure ]
       - deploy-frontend:
-          requires: [run-migrations]
+          requires: [ run-migrations ]
       - deploy-backend:
-           requires: [run-migrations]
+          requires: [ run-migrations ]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
