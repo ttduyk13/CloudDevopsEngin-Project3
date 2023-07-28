@@ -380,14 +380,14 @@ jobs:
           name: Deploy backend
           command: |
             # your code here
-            eho "#1 - backend"
+            echo "#1 - backend"
             cd backend
             pwd
             ls backend
             npm install
             npm run build
             cd ..
-            eho "#2 - backend.tar"
+            echo "#2 - backend.tar"
             pwd
             tar -C backend -czvf artifact.tar.gz .
             ls
@@ -502,29 +502,29 @@ jobs:
 workflows:
   default:
     jobs:
-      # - build-frontend
-      # - build-backend
-      # - test-frontend:
-      #     requires: [build-frontend]
-      # - test-backend:
-      #     requires: [build-backend]
-      # - scan-backend:
-      #     requires: [build-backend]
-      # - scan-frontend:
-      #     requires: [build-frontend]
-      # - deploy-infrastructure:
-      #     requires: [test-frontend, test-backend, scan-frontend, scan-backend]
-      #     filters:
-      #       branches:
-      #         only: [dev, master]
-      # - configure-infrastructure:
-      #     requires: [deploy-infrastructure]
-      # - run-migrations:
-      #     requires: [configure-infrastructure]
-      # - deploy-frontend:
-      #     requires: [run-migrations]
+       - build-frontend
+       - build-backend
+       - test-frontend:
+           requires: [build-frontend]
+       - test-backend:
+           requires: [build-backend]
+       - scan-backend:
+           requires: [build-backend]
+       - scan-frontend:
+           requires: [build-frontend]
+       - deploy-infrastructure:
+           requires: [test-frontend, test-backend, scan-frontend, scan-backend]
+           filters:
+             branches:
+               only: [dev, master]
+       - configure-infrastructure:
+           requires: [deploy-infrastructure]
+       - run-migrations:
+           requires: [configure-infrastructure]
+       - deploy-frontend:
+           requires: [run-migrations]
       - deploy-backend
-          # requires: [run-migrations]
+           requires: [run-migrations]
       # - smoke-test:
       #     requires: [deploy-backend, deploy-frontend]
       # - cloudfront-update:
