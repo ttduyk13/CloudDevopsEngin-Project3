@@ -1,7 +1,8 @@
 ---
 - name: Update/Upgrade packages
+  become: yes
   apt:
-    upgrade: dist
+    upgrade: yes
     update_cache: yes
 
 - name: Install Node.js, npm
