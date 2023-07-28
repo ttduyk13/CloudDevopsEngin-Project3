@@ -455,7 +455,7 @@ jobs:
       - install-nodejs
       - install-npm
       - install-awscli
-      - run
+      - run:
           name: get old stack workflow id
           command: |
             export OldWorkflowID=$(aws cloudformation \
