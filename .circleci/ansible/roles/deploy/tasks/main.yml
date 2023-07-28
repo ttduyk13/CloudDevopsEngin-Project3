@@ -18,13 +18,14 @@
 #     name: pm2
 #     global: yes
 
-- name: Extract artifact
+- name: extract artifact
+  become: yes
   unarchive:
-    src: roles/deploy/files/artifact.tar.gz
+    src: files/artifact.tar.gz
     dest: .
-    remote_src: yes
 
 - name: Start application
+  become: yes
   shell: |
     npm install
     pm2 stop default
