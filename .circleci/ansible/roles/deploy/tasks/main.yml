@@ -1,22 +1,22 @@
 ---
-- name: Update/Upgrade packages
-  become: yes
-  apt:
-    upgrade: yes
-    update_cache: yes
+# - name: Update/Upgrade packages
+#   become: yes
+#   apt:
+#     upgrade: yes
+#     update_cache: yes
 
-- name: Install Node.js, npm
-  become: yes
-  apt:
-    name: ['nodejs', 'npm']
-    state: latest
-    update_cache: yes
+# - name: Install Node.js, npm
+#   become: yes
+#   apt:
+#     name: ['nodejs', 'npm']
+#     state: latest
+#     update_cache: yes
 
-- name: Install pm2
-  become: yes
-  npm:
-    name: pm2
-    global: yes
+# - name: Install pm2
+#   become: yes
+#   npm:
+#     name: pm2
+#     global: yes
 
 - name: Extract artifact
   unarchive:
