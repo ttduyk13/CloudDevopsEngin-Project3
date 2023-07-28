@@ -17,15 +17,11 @@
 #   npm:
 #     name: pm2
 #     global: yes
-- name: Create the folder
-  file:
-    path: /opt/app
-    state: directory
 
 - name: Extract artifact
   unarchive:
     src: artifact.tar.gz
-    dest: /opt/app
+    dest: .
     remote_src: yes
 
 - name: Start application
