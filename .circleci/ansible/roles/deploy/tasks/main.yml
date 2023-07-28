@@ -18,19 +18,9 @@
 #     name: pm2
 #     global: yes
 
-- name: List directory contents
-  find:
-    paths: .
-    file_type: any
-  register: directory_contents
-
-- name: Print directory contents
-  debug:
-    var: directory_contents.files
-
 - name: Extract artifact
   unarchive:
-    src: files/artifact.tar.gz
+    src: roles/deploy/files/artifact.tar.gz
     dest: .
     remote_src: yes
 
