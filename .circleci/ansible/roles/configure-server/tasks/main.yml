@@ -2,14 +2,13 @@
 - name: Update/Upgrade packages
   apt:
     upgrade: dist
+    update_cache: yes
 
 - name: Install Node.js, npm
   apt:
-    name: "{{ item }}"
+    name: ["nodejs", "npm"]
     state: present
-  loop:
-    - nodejs
-    - npm
+    update_cache: yes
 
 - name: Install pm2
   npm:
