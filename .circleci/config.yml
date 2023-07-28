@@ -364,9 +364,6 @@ jobs:
       - add_ssh_keys:
           fingerprints:
             - "a6:26:f0:cd:c0:07:04:e5:e6:9d:1e:59:05:f5:a1:5b"
-      # attach workspace
-      - attach_workspace:
-          at: ~/
       - apt-update
       - install-tar
       - install-gzip
@@ -374,24 +371,26 @@ jobs:
       - install-nodejs
       - install-npm
       - install-awscli
+      - restore_cache:
+          keys: [backend-build]
+      # attach workspace
+      - attach_workspace:
+          at: ~/
       - run:
           name: Deploy backend
           command: |
             # your code here
             cd backend
-            npm i
+            npm install
             npm run build
             cd ..
-            ## Zip the directory
             tar -C backend -czvf artifact.tar.gz .
-            echo "Check root"
-            ls
-            mkdir -p .circleci/ansible/roles/deploy/files
+            mkdir -p ./.circleci/ansible/roles/deploy/files/
+            echo "ls .circleci/ansible/roles/deploy/files"
             ls .circleci/ansible/roles/deploy/files
-            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/
+            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
             cd .circleci/ansible
-            echo "Contents  of the inventory.txt file is -------"
-            cat inventory.txt
+            echo "Contents of the inventory.txt file is ------$(cat inventory.txt)"
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt deploy-backend.yml
       # Here's where you will add some code to rollback on failure
       - destroy-environment:
