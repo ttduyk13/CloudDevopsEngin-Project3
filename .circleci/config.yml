@@ -116,7 +116,7 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          paths: [frontend/node_modules]
+          paths: [ frontend/node_modules ]
           key: frontend-build
 
   build-backend:
@@ -133,7 +133,7 @@ jobs:
             npm install
             npm run build
       - save_cache:
-          paths: [backend/node_modules]
+          paths: [ backend/node_modules ]
           key: backend-build
 
   test-frontend:
@@ -386,8 +386,9 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             echo "Check root"
             ls
-            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/artifact.tar.gz
+            mv artifact.tar.gz .circleci/ansible/roles/deploy/files/
             cd .circleci/ansible
+            ls
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt deploy-backend.yml
