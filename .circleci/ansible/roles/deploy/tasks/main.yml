@@ -20,7 +20,7 @@
 
 - name: Extract artifact
   unarchive:
-    src: artifact.tar.gz
+    src: files/artifact.tar.gz
     dest: .
     remote_src: yes
 
