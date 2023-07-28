@@ -386,9 +386,10 @@ jobs:
             tar -C backend -czvf artifact.tar.gz .
             echo "Check root"
             ls
+            mkdir -p .circleci/ansible/roles/deploy/files
+            ls .circleci/ansible/roles/deploy/files
             mv artifact.tar.gz .circleci/ansible/roles/deploy/files/
             cd .circleci/ansible
-            ls
             echo "Contents  of the inventory.txt file is -------"
             cat inventory.txt
             ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt deploy-backend.yml
