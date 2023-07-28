@@ -383,7 +383,7 @@ jobs:
             echo "#1 - backend"
             cd backend
             pwd
-            ls backend
+            ls
             npm install
             npm run build
             cd ..
