@@ -536,6 +536,7 @@ jobs:
       - add_ssh_keys:
           fingerprints: 
             - "a6:26:f0:cd:c0:07:04:e5:e6:9d:1e:59:05:f5:a1:5b"
+      - apt-update
       - install-tar
       - install-gzip
       - install-ansible
