@@ -508,7 +508,7 @@ jobs:
             if [[ "$CIRCLE_WORKFLOW_ID:0:7" != "$OldWorkflowID" ]]
             then
               # your code here
-              export STACK=$(aws cloudformation list-stacks --query "StackSummaries[?contains(StackName,'$OldWorkflowID')StackName" \
+              export STACK=$(aws cloudformation list-stacks --query "StackSummaries[?contains(StackName,'$OldWorkflowID')].StackName" \
               --output text)
 
               echo "STACK: $STACK"
