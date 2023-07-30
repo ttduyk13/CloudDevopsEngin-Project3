@@ -527,6 +527,34 @@ jobs:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
       - revert-migrations:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+    
+  add-prometheus-node-exporter:
+    docker:
+      - image: cimg/python:3.11.4
+    steps:
+      - checkout
+      - add_ssh_keys:
+          fingerprints: 
+            - "a6:26:f0:cd:c0:07:04:e5:e6:9d:1e:59:05:f5:a1:5b"
+      - install-tar
+      - install-gzip
+      - install-ansible
+      - install-nodejs
+      - install-npm
+      - install-awscli
+      - attach_workspace:
+          at: ~/
+      - run:
+          name: Setup Prometheus Node Exporter
+          command: |
+            cd .circleci/ansible
+            cat inventory.txt 
+            ANSIBLE_HOST_KEY_CHECKING=False ansible-playbook -i inventory.txt node-exporter.yml
+      - destroy-environment:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+      - revert-migrations:
+          workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
+
 
 workflows:
   default:
@@ -546,8 +574,10 @@ workflows:
           filters:
             branches:
               only: [master]
-      - configure-infrastructure:
+      - add-prometheus-node-exporter:
           requires: [deploy-infrastructure]
+      - configure-infrastructure:
+          requires: [add-prometheus-node-exporter]
       - run-migrations:
           requires: [configure-infrastructure]
       - deploy-frontend:
