@@ -505,26 +505,23 @@ jobs:
             export OldWorkflowID="$(curl --insecure  https://kvdb.io/Ww2HJdDraCYcVcazEPiJX2/OLD_WORKFLOW_ID)"
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
-            if [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]
+            if [[ "$CIRCLE_WORKFLOW_ID:0:7" != "$OldWorkflowID" ]]
             then
               # your code here
-              echo $(aws cloudformation describe-stacks --query 'Stacks[?contains(StackName, `${OldWorkflowID}`) == `true`].StackName[0]' \
+              export STACK=$(aws cloudformation list-stacks --query "StackSummaries[?contains(StackName,'$OldWorkflowID')StackName" \
               --output text)
 
-              export STACK=$(aws cloudformation describe-stacks --query 'Stacks[?contains(StackName, `${OldWorkflowID}`) == `true`].StackName[0]' \
-              --output text)
-
-              echo ${STACK}
+              echo "STACK: $STACK"
               
-              if [[ "${STACK}" != "" ]]
+              if [[ "$STACK" != "" ]]
               then
                 echo "----------Remove stacks------------"
-                aws s3 rm "s3://udapeople-${OldWorkflowID}" --recursive
-                aws cloudformation delete-stack --stack-name "udapeople-backend-${OldWorkflowID}"
-                aws cloudformation delete-stack --stack-name "udapeople-frontend-${OldWorkflowID}"
+                aws s3 rm "s3://udapeople-$OldWorkflowID" --recursive
+                aws cloudformation delete-stack --stack-name "udapeople-backend-$OldWorkflowID"
+                aws cloudformation delete-stack --stack-name "udapeople-frontend-$OldWorkflowID"
               fi
             else
-              echo "Test [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "${OldWorkflowID}" ]]"           
+              echo "Test [[ "${CIRCLE_WORKFLOW_ID:0:7}" != "$OldWorkflowID" ]]"           
             fi
       - destroy-environment:
           workflow_id: ${CIRCLE_WORKFLOW_ID:0:7}
