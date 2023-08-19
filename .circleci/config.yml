@@ -475,11 +475,20 @@ jobs:
           name: Update cloudfront distribution
           command: |
             # your code here
-             aws cloudformation deploy \
+            echo Public IPv4 before "$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
+              --output text)"
+            aws cloudformation deploy \
               --template-file .circleci/files/cloudfront.yml \
               --stack-name InitialStack \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
+              
+            echo Public IPv4 after "$(aws ec2 describe-instances \
+              --query 'Reservations[*].Instances[*].PublicIpAddress' \
+              --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
+              --output text)"
             echo "Current workflow: ${CIRCLE_WORKFLOW_ID:0:7}"
             echo $(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
