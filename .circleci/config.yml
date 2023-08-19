@@ -332,6 +332,7 @@ jobs:
           name: Get backend url
           command: |
             # your code here
+            echo "Current workflow id ${CIRCLE_WORKFLOW_ID:0:7}"
             export BACKEND_IP=$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
               --filters Name=tag:aws:cloudformation:stack-name,Values=udapeople-backend-${CIRCLE_WORKFLOW_ID:0:7} \
