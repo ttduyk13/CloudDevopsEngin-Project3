@@ -527,7 +527,13 @@ jobs:
               if [[ "$STACK" != "" ]]
               then
                 echo "----------Remove stacks------------"
-                aws s3 rm "s3://udapeople-$OldWorkflowID" --recursive
+                if ! (aws s3 ls "s3://udapeople-$OldWorkflowID" 2>&1 | grep -q 'NoSuchBucket');
+                then
+                  echo "remove bucket udapeople-$OldWorkflowID" 
+                  aws s3 rm "s3://udapeople-$OldWorkflowID" --recursive
+                else
+                  echo "bucket udapeople-$OldWorkflowI doesn't exist"
+                fi
                 aws cloudformation delete-stack --stack-name "udapeople-backend-$OldWorkflowID"
                 aws cloudformation delete-stack --stack-name "udapeople-frontend-$OldWorkflowID"
               fi
