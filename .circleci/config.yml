@@ -521,8 +521,10 @@ jobs:
               # your code here
               export STACK=$(aws cloudformation list-stacks --query "StackSummaries[?contains(StackName,'$OldWorkflowID')].StackName" \
               --output text)
+              export BUCKET=$((aws s3 ls "s3://udapeople-$OldWorkflowID")
 
               echo "STACK: $STACK"
+              echo "BUCKET: $BUCKET"
               
               if [[ "$STACK" != "" ]]
               then
