@@ -532,9 +532,9 @@ jobs:
                 echo "remove bucket udapeople-$OldWorkflowID"
                 if (aws s3 ls "s3://udapeople-$OldWorkflowID");
                 then
-                  echo "Bucket udapeople-$OldWorkflowID does not found"
-                else
                   aws s3 rm "s3://udapeople-$OldWorkflowID" --recursive
+                else
+                  echo "Bucket udapeople-$OldWorkflowID does not found"
                 fi
                 
                 aws cloudformation delete-stack --stack-name "udapeople-backend-$OldWorkflowID"
