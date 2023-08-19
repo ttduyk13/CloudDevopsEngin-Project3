@@ -1,5 +1,2 @@
 URL01: https://github.com/ttduyk13/CloudDevopsEngin-Project3
-URL02:
-URL03:
-URL04:
-URL05:
+URL02: http://udapeople-1183400.s3-website-us-east-1.amazonaws.com/#/employees
