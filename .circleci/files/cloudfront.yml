@@ -6,9 +6,7 @@ Parameters:
     Description: Unique identifier.
     Type: String
 
-
 Resources:
-  
   CloudFrontOriginAccessIdentity:
     Type: "AWS::CloudFront::CloudFrontOriginAccessIdentity"
     Properties:
@@ -31,6 +29,16 @@ Resources:
             QueryString: False
           TargetOriginId: webpage
           ViewerProtocolPolicy: allow-all
+
+  CloudFrontInvalidation:
+    Type: AWS::CloudFront::Invalidation
+    Properties:
+      DistributionId: !Ref WebpageCDN
+      InvalidationBatch:
+        Paths:
+          Quantity: 1
+          Items:
+            - /*
 
 Outputs:
   WorkflowID:
