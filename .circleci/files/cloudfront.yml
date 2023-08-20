@@ -30,16 +30,6 @@ Resources:
           TargetOriginId: webpage
           ViewerProtocolPolicy: allow-all
 
-  CloudFrontInvalidation:
-    Type: AWS::CloudFront::Invalidation
-    Properties:
-      DistributionId: !Ref WebpageCDN
-      InvalidationBatch:
-        Paths:
-          Quantity: 1
-          Items:
-            - /*
-
 Outputs:
   WorkflowID:
     Value: !Sub ${WorkflowID}
