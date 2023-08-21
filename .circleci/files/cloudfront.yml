@@ -38,4 +38,4 @@ Outputs:
       Name: WorkflowID
   CloudFrontDistributionID:
     Description: 'CloudFront distribution ID'
-    Value: !Ref CloudFrontDistribution
+    Value: !Ref WebpageCDN

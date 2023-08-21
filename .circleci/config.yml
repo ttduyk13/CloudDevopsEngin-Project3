@@ -482,6 +482,8 @@ jobs:
               --stack-name InitialStack \
               --parameter-overrides WorkflowID="${CIRCLE_WORKFLOW_ID:0:7}" \
               --tags project=udapeople
+
+            aws cloudfront create-invalidation --distribution-id $(aws cloudformation describe-stacks --query "Stacks[].Outputs[?OutputKey=='CloudFrontDistributionID'].OutputValue" --output text) --paths '/*'
               
             echo Public IPv4 after "$(aws ec2 describe-instances \
               --query 'Reservations[*].Instances[*].PublicIpAddress' \
@@ -523,8 +525,6 @@ jobs:
       - run:
           name: Remove old stacks and files
           command: |
-            aws cloudfront create-invalidation --distribution-id $(aws cloudformation describe-stacks --query "Stacks[].Outputs[?OutputKey=='CloudFrontDistributionID'].OutputValue" --output text) --paths '/*'
-            
             export OldWorkflowID="$(curl --insecure  https://kvdb.io/Ww2HJdDraCYcVcazEPiJX2/OLD_WORKFLOW_ID)"
             echo OldWorkflowID: "${OldWorkflowID}"
             echo CIRCLE_WORKFLOW_ID: "${CIRCLE_WORKFLOW_ID:0:7}"
