@@ -36,3 +36,6 @@ Outputs:
     Description: URL for website hosted on S3
     Export:
       Name: WorkflowID
+  CloudFrontDistributionID:
+    Description: 'CloudFront distribution ID'
+    Value: !Ref CloudFrontDistribution
